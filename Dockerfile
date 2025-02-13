@@ -16,25 +16,23 @@ RUN apt-get update && apt-get install -y \
 # Install Prettier globally
 RUN npm install -g prettier@3.4.2
 
+# Create a non-root user (appuser)
+RUN useradd -m appuser
+
 # Copy the project files into the working directory
 COPY . .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Ensure the environment variables are loaded at runtime
-ENV PYTHONUNBUFFERED=1
-
-# Create the /data directory inside the container
+# Create the /data directory and set ownership
 COPY data /data
-RUN chmod 777 /data
+RUN chmod 777 /data && chown -R appuser:appuser /data
 
 USER appuser
 
 # Expose port 8000 for the API
 EXPOSE 8000
-
-# Entrypoint with token validation
 
 # Ensure AIPROXY_TOKEN is set and set DATA_DIR correctly
 CMD ["sh", "-c", \
