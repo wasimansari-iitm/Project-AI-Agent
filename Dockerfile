@@ -1,20 +1,25 @@
-# Use a newer Python version
-FROM python:3.11
+# Use lightweight Python image
+FROM python:3.9-slim  
 
-# Set the working directory in the container
+# Set the working directory
 WORKDIR /app
 
-# Copy only requirements.txt first
-COPY requirements.txt /app/
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    tesseract-ocr \
+    git \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*  # Clean up to reduce image size
 
-# Install required Python packages
+# Copy and install Python dependencies
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Now copy the rest of the project files
-COPY . /app/
+# Copy application files
+COPY . .
 
-# Expose port 8000 for the application
+# Expose the port for Flask API
 EXPOSE 8000
 
-# Command to run the application
+# Run the Flask application
 CMD ["python", "app.py"]
