@@ -1,10 +1,10 @@
-# Use an official Python runtime as a base image
-FROM python:3.9
+# Use a newer Python version
+FROM python:3.11
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy only requirements.txt first (to cache dependencies)
+# Copy only requirements.txt first
 COPY requirements.txt /app/
 
 # Install required Python packages
