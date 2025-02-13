@@ -20,7 +20,7 @@ import logging
 from bs4 import BeautifulSoup
 import speech_recognition as sr
 import markdown
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from bs4 import BeautifulSoup
 from pydub import AudioSegment
 import markdown
@@ -858,36 +858,50 @@ def handle_task(task, permission=False):
 # /run endpoint
 @app.route('/run', methods=['GET', 'POST'])
 def run_handler():
-    # Try to get the task from the JSON body (for POST requests)
     task_description = None
+
     if request.is_json:
         data = request.get_json()
         task_description = data.get("task")
 
-    # If the task is not in the JSON body, try to get it from the query parameters (for GET requests)
     if not task_description:
         task_description = request.args.get("task")
 
-    # If the task is still not provided, return an error
     if not task_description:
         return jsonify({"error": "Task not provided."}), 400
 
     logging.info(f"Task received: {task_description}")
 
-    # Step 1: AI Agent interprets the task
     task = {
         "content": task_description,
         "description": task_description
     }
 
-    # Step 2: Execute the task
     try:
         result = handle_task(task, permission=True)
-        return jsonify({
-            "status": "success",
-            "task": task_description,
-            "result": result
-        })
+
+        # 🔹 Ensure result is JSON serializable
+        if isinstance(result, dict):
+            return jsonify({
+                "status": "success",
+                "task": task_description,
+                "result": result
+            })
+        elif isinstance(result, str):
+            return jsonify({
+                "status": "success",
+                "task": task_description,
+                "result": {"message": result}
+            })
+        elif isinstance(result, Response):  # Ensure response is returned directly
+            return result
+        else:
+            return jsonify({
+                "status": "error",
+                "task": task_description,
+                "error": "Unexpected response type"
+            }), 500
+
     except Exception as e:
         logging.error(f"Error executing task: {e}")
         return jsonify({"error": f"Error executing task: {str(e)}"}), 500
@@ -919,4 +933,4 @@ def read_handler():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=8000)
+    app.run(host="0.0.0.0", port=8000) 
