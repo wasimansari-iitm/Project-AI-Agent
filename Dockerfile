@@ -17,13 +17,32 @@ RUN apt-get update && apt-get install -y \
 RUN npm install -g prettier@3.4.2
 
 # Copy the project files into the working directory
-COPY . /Project-AI-Agent  
+COPY . .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Ensure the environment variables are loaded at runtime
+ENV PYTHONUNBUFFERED=1
+
+# Create the /data directory inside the container
+RUN chmod 777 /data
+
+USER appuser
+
+# Runtime configuration
+ENV AIPROXY_TOKEN="" \
+    DATA_DIR=/data \
+    PYTHONUNBUFFERED=1
+
 # Expose port 8000 for the API
 EXPOSE 8000
 
-# Start the Flask application
-CMD ["python", "app/app.py"]
+# Entrypoint with token validation
+
+CMD ["sh", "-c", \
+    "if [ -z \"$AIPROXY_TOKEN\" ]; then \
+        echo 'ERROR: Must set AIPROXY_TOKEN via -e flag' >&2; \
+        exit 1; \
+    fi; \
+    exec python app/app.py"]

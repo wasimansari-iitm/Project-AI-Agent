@@ -38,10 +38,10 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 # Environment Setup
 # ---------------------------
 load_dotenv(dotenv_path=".env")
-API_KEY = os.getenv("API_KEY")
+AIPROXY_TOKEN = os.getenv("AIPROXY_TOKEN")
 
-if not API_KEY:
-    logging.error("API_KEY is not loaded. Check the .env file path.")
+if not AIPROXY_TOKEN:
+    logging.error("AIPROXY_TOKEN is not loaded. Check the .env file path.")
     exit()
 
 # API Proxy URL for AI processing
@@ -604,7 +604,7 @@ def send_task_to_ai(task_data, detected_lang):
     try:
         headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {API_KEY}"
+            "Authorization": f"Bearer {AIPROXY_TOKEN}"
         }
         
         # List of available function names (update as needed)
