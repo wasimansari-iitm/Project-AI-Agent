@@ -1,17 +1,1 @@
-Delivered-To: michaelgibson@example.com
-MIME-Version: 1.0
-From: "Lisa Leblanc" <kristinamartinez@example.org>
-Date: Sun, 17 Jun 2012 01:27:08 +0000
-Subject: Task step coach unit second.
-To: "Christina Romero" <michaelgibson@example.com>
-Cc: "Ronald Carter" <ystanton@example.org>, "Matthew Moody" <larry75@example.com>, "Daniel Park" <feliciaschmidt@example.com>
-Content-Type: multipart/alternative; boundary="00000000000091a0ba062bcdefca"
-
---00000000000091a0ba062bcdefca
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Here however left wind on. Security property accept decision hit.
-Thing employee book prove. Say individual figure explain by shoulder. Watch service decide whether loss argue.
-
---00000000000091a0ba062bcdefca--
+From: <sender@example.com>
