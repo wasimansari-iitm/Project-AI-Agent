@@ -52,7 +52,7 @@ AI_PROXY_URL = "https://aiproxy.sanand.workers.dev/openai/v1/chat/completions"
 # ---------------------------
 
 # Constants
-DATA_DIRECTORY = os.path.abspath("../data")
+DATA_DIRECTORY = os.getenv("DATA_DIR", "/data")
 FEEDBACK_LOG_FILE = "feedback_log.json"
 
 # 🚫 Global Rules Enforcement
@@ -63,18 +63,18 @@ def restricted_access(file_path):
     absolute_file_path = os.path.abspath(file_path)
     
     # Resolve the absolute path of the /data directory
-    data_directory = os.path.abspath("../data")
+    DATA_DIRECTORY = os.getenv("DATA_DIR", "/data")
     
     # Normalize both paths to ensure consistent formatting
     absolute_file_path = os.path.normpath(absolute_file_path)
-    data_directory = os.path.normpath(data_directory)
+    DATA_DIRECTORY = os.path.normpath(DATA_DIRECTORY)
     
     # Debug logs to verify paths
     print(f"🔒 Checking access for file: {absolute_file_path}")
-    print(f"🔒 Data directory: {data_directory}")
+    print(f"🔒 Data directory: {DATA_DIRECTORY}")
     
     # Ensure the file is within the /data directory
-    if not os.path.commonpath([absolute_file_path, data_directory]) == data_directory:
+    if not os.path.commonpath([absolute_file_path, DATA_DIRECTORY]) == DATA_DIRECTORY:
         print(f"❌ Access denied: {file_path} is outside /data directory.")
         return False
     
@@ -158,7 +158,7 @@ def run_script(email):
 
 def format_markdown_file():
     """Format the contents of /data/format.md using prettier@3.4.2."""
-    file_path = os.path.join(data_directory, "format.md")
+    file_path = os.path.join(DATA_DIRECTORY, "format.md")
     if not restricted_access(file_path):
         return "Access denied."
 
@@ -394,13 +394,13 @@ def extract_information(text, pattern_type):
 
 def extract_information_from_files(pattern_type):
     """Traverse the /data directory to extract information based on pattern type."""
-    data_directory = "../data"
-    if not restricted_access(data_directory):
+    DATA_DIRECTORY = "../data"
+    if not restricted_access(DATA_DIRECTORY):
         return "Access denied."
 
     try:
         extracted_data = []
-        for root, _, files in os.walk(data_directory):
+        for root, _, files in os.walk(DATA_DIRECTORY):
             for file in files:
                 if file.endswith('.txt') or file.endswith('.md') or file.endswith('.log'):
                     file_path = os.path.join(root, file)
@@ -443,7 +443,7 @@ def fetch_data_from_api(api_url, output_file):
 def clone_and_commit_repo(repo_url, commit_message):
     """Clone a git repository and make a commit."""
     repo_name = repo_url.split("/")[-1].replace(".git", "")
-    repo_path = os.path.join(data_directory, repo_name)
+    repo_path = os.path.join(DATA_DIRECTORY, repo_name)
 
     if not restricted_access(repo_path):
         return "Access denied."
@@ -582,7 +582,7 @@ def filter_csv_handler():
     except json.JSONDecodeError:
         return jsonify({"error": "Invalid filters format. Expected JSON."}), 400
 
-    full_path = os.path.join(data_directory, os.path.basename(file_path))
+    full_path = os.path.join(DATA_DIRECTORY, os.path.basename(file_path))
     if not os.path.isfile(full_path):
         return jsonify({"error": "File not found."}), 404
 
@@ -595,7 +595,7 @@ def filter_csv_handler():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-data_directory = os.path.abspath("../data")
+DATA_DIRECTORY = os.getenv("DATA_DIR", "/data")
 
 # 🚀 Enhanced Task Handler with Language Support
 
@@ -921,7 +921,7 @@ def read_handler():
     if not file_path:
         return jsonify({"error": "File path not provided."}), 400
 
-    full_path = os.path.join(data_directory, os.path.basename(file_path))
+    full_path = os.path.join(DATA_DIRECTORY, os.path.basename(file_path))
     if not os.path.isfile(full_path):
         return jsonify({"error": "File not found."}), 404
 

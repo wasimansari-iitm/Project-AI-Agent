@@ -26,23 +26,20 @@ RUN pip install --no-cache-dir -r requirements.txt
 ENV PYTHONUNBUFFERED=1
 
 # Create the /data directory inside the container
+COPY data /data
 RUN chmod 777 /data
 
 USER appuser
-
-# Runtime configuration
-ENV AIPROXY_TOKEN="" \
-    DATA_DIR=/data \
-    PYTHONUNBUFFERED=1
 
 # Expose port 8000 for the API
 EXPOSE 8000
 
 # Entrypoint with token validation
 
+# Ensure AIPROXY_TOKEN is set and set DATA_DIR correctly
 CMD ["sh", "-c", \
     "if [ -z \"$AIPROXY_TOKEN\" ]; then \
-        echo 'ERROR: Must set AIPROXY_TOKEN via -e flag' >&2; \
+        echo 'ERROR: Please set AIPROXY_TOKEN via -e flag' to access the app >&2; \
         exit 1; \
     fi; \
-    exec python app/app.py"]
+    DATA_DIR=/data PYTHONUNBUFFERED=1 exec python app.py"]
