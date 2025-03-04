@@ -60,7 +60,7 @@ The **AI Automation Agent** is a powerful API designed to **process files, autom
 ## **🚀 How to Run**
 ### **🔹 1. Pull & Run the Docker Container**
 ```bash
-podman run -e AIPROXY_TOKEN=your_token -p 8000:8000 your_dockerhub_username/ai-agent
+podman run -e AIPROXY_TOKEN=your_token -p 8000:8000 wasimansariiitm/my-ai-agent
 ```
 ### **🔹 2. Trigger an API Task**
 #### **Run a Task (Example: Count Wednesdays in `/data/dates.txt`)**
